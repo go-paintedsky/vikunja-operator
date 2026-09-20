@@ -1,0 +1,13 @@
+apiVersion: vikunja.paintedsky.io/v1alpha1
+kind: Label
+metadata:
+  labels:
+    app.kubernetes.io/name: vikunja-operator
+    app.kubernetes.io/managed-by: kustomize
+  name: label-sample
+spec:
+  instanceRef:
+    name: vikunjainstance-sample
+  title: bug
+  description: Something isn't working.
+  hexColor: "d73a4a"

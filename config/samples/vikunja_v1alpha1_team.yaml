@@ -1,0 +1,16 @@
+apiVersion: vikunja.paintedsky.io/v1alpha1
+kind: Team
+metadata:
+  labels:
+    app.kubernetes.io/name: vikunja-operator
+    app.kubernetes.io/managed-by: kustomize
+  name: team-sample
+spec:
+  instanceRef:
+    name: vikunjainstance-sample
+  name: Sample Team
+  description: A team created and managed by vikunja-operator.
+  members:
+    - username: alice
+      admin: true
+    - username: bob

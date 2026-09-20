@@ -1,0 +1,8 @@
+## Append samples of your project ##
+resources:
+- vikunja_v1alpha1_project.yaml
+- vikunja_v1alpha1_task.yaml
+- vikunja_v1alpha1_team.yaml
+- vikunja_v1alpha1_label.yaml
+- vikunja_v1alpha1_vikunjainstance.yaml
+# +kubebuilder:scaffold:manifestskustomizesamples

@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: vikunja-api-token
+  labels:
+    app.kubernetes.io/name: vikunja-operator
+    app.kubernetes.io/managed-by: kustomize
+stringData:
+  # A personal access token (or bot token) created under Settings > API Tokens
+  # in Vikunja. It needs permissions for whichever of projects, tasks, teams
+  # and labels you intend to manage through this operator.
+  token: tk_replace-with-a-real-vikunja-api-token
+---
+apiVersion: vikunja.paintedsky.io/v1alpha1
+kind: VikunjaInstance
+metadata:
+  labels:
+    app.kubernetes.io/name: vikunja-operator
+    app.kubernetes.io/managed-by: kustomize
+  name: vikunjainstance-sample
+spec:
+  baseURL: https://try.vikunja.io/api/v2
+  apiTokenSecretRef:
+    name: vikunja-api-token
+    key: token

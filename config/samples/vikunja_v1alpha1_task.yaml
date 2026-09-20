@@ -1,0 +1,14 @@
+apiVersion: vikunja.paintedsky.io/v1alpha1
+kind: Task
+metadata:
+  labels:
+    app.kubernetes.io/name: vikunja-operator
+    app.kubernetes.io/managed-by: kustomize
+  name: task-sample
+spec:
+  projectRef: project-sample
+  title: Sample Task
+  description: A task created and managed by vikunja-operator.
+  priority: 2
+  labelRefs:
+    - label-sample

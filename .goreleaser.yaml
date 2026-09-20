@@ -1,0 +1,99 @@
+# yaml-language-server: $schema=https://goreleaser.com/static/schema.json
+version: 2
+
+project_name: vikunja-operator
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - id: manager
+    main: ./cmd
+    binary: manager
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w
+
+kos:
+  - id: manager
+    build: manager
+    main: ./cmd
+    platforms:
+      - linux/amd64
+      - linux/arm64
+    repositories:
+      - "{{ .Env.KO_DOCKER_REPO }}"
+    tags:
+      - "{{ .Tag }}"
+      - "{{ .Version }}"
+      - "{{ if not .Prerelease }}latest{{ end }}"
+    bare: true
+    preserve_import_paths: false
+    base_image: gcr.io/distroless/static:nonroot
+    user: "65532:65532"
+    creation_time: "{{ .CommitTimestamp }}"
+    sbom: spdx
+    labels:
+      org.opencontainers.image.source: "https://github.com/go-paintedsky/vikunja-operator"
+      org.opencontainers.image.title: vikunja-operator
+      org.opencontainers.image.description: Kubernetes operator for managing Vikunja resources
+      org.opencontainers.image.licenses: Apache-2.0
+      org.opencontainers.image.revision: "{{ .FullCommit }}"
+      org.opencontainers.image.version: "{{ .Version }}"
+
+archives:
+  - id: manager
+    ids:
+      - manager
+    formats:
+      - tar.gz
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+
+checksum:
+  name_template: checksums.txt
+
+changelog:
+  use: git
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+      - "^ci:"
+      - "^chore:"
+      - "^build:"
+      - "^Merge "
+      - "^Revert "
+  groups:
+    - title: Features
+      regexp: '^.*?feat(\(.+\))?!?:.+$'
+      order: 0
+    - title: Bug fixes
+      regexp: '^.*?fix(\(.+\))?!?:.+$'
+      order: 1
+    - title: Performance
+      regexp: '^.*?perf(\(.+\))?!?:.+$'
+      order: 2
+    - title: Others
+      order: 999
+
+release:
+  github:
+    owner: go-paintedsky
+    name: vikunja-operator
+  extra_files:
+    - glob: out/install.yaml
+      name_template: install.yaml
+
+snapshot:
+  version_template: "{{ incpatch .Version }}-next"

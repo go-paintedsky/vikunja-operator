@@ -1,0 +1,13 @@
+apiVersion: vikunja.paintedsky.io/v1alpha1
+kind: Project
+metadata:
+  labels:
+    app.kubernetes.io/name: vikunja-operator
+    app.kubernetes.io/managed-by: kustomize
+  name: project-sample
+spec:
+  instanceRef:
+    name: vikunjainstance-sample
+  title: Sample Project
+  description: A project created and managed by vikunja-operator.
+  hexColor: "1973ff"
