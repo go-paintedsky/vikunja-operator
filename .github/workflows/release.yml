@@ -41,18 +41,18 @@ jobs:
         run: |
           set -euo pipefail
           make manifests generate kustomize
-          mkdir -p /tmp/vikunja-operator-release out
-          cat > /tmp/vikunja-operator-release/kustomization.yaml <<EOF
+          mkdir -p out/release-overlay
+          cat > out/release-overlay/kustomization.yaml <<EOF
           apiVersion: kustomize.config.k8s.io/v1beta1
           kind: Kustomization
           resources:
-          - $(pwd)/config/default
+          - ../../config/default
           images:
           - name: controller
             newName: ${KO_DOCKER_REPO}
             newTag: ${GITHUB_REF_NAME}
           EOF
-          ./bin/kustomize build /tmp/vikunja-operator-release > out/install.yaml
+          ./bin/kustomize build out/release-overlay > out/install.yaml
 
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@f06c13b6b1a9625abc9e6e439d9c05a8f2190e94 # v7.2.3
