@@ -51,6 +51,8 @@ jobs:
           set -euo pipefail
           make manifests generate kustomize
           mkdir -p out/release-overlay out/release-overlay-nocrds
+          cp config/default/metrics_service.yaml config/default/manager_metrics_patch.yaml \
+            out/release-overlay-nocrds/
 
           cat > out/release-overlay/kustomization.yaml <<EOF
           apiVersion: kustomize.config.k8s.io/v1beta1
@@ -71,9 +73,9 @@ jobs:
           resources:
           - ../../config/rbac
           - ../../config/manager
-          - ../../config/default/metrics_service.yaml
+          - metrics_service.yaml
           patches:
-          - path: ../../config/default/manager_metrics_patch.yaml
+          - path: manager_metrics_patch.yaml
             target:
               kind: Deployment
           images:
