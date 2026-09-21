@@ -58,9 +58,9 @@ spec:
         seccompProfile:
           type: RuntimeDefault
       containers:
-      - command:
-        - /manager
-        args:
+      # Do not set command. The Dockerfile image entrypoint is /manager;
+      # the GoReleaser/ko image entrypoint is /ko-app/cmd.
+      - args:
           - --leader-elect
           - --health-probe-bind-address=:8081
         image: controller:latest

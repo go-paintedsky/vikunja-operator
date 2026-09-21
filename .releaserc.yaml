@@ -1,0 +1,10 @@
+# Tag only. The GitHub App push of v*.*.* starts release.yml.
+tagFormat: "v${version}"
+branches:
+  - main
+plugins:
+  - "@semantic-release/commit-analyzer"
+  - - "@semantic-release/exec"
+    - publishCmd: |
+        git tag -a "v${nextRelease.version}" -m "chore(release): v${nextRelease.version}"
+        git push origin "v${nextRelease.version}"
