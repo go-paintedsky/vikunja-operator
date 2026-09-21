@@ -156,9 +156,11 @@ This repo uses [Conventional Commits](https://www.conventionalcommits.org/) and 
 
 - Pull request titles and commit messages are linted by `.github/workflows/conventional-commits.yml`.
 - Pushing a tag matching `v*.*.*` runs `.github/workflows/release.yml`, which publishes:
-  - manager binaries
   - a multi-arch GHCR image (`linux/amd64`, `linux/arm64`)
-  - a GitHub Release whose `install.yaml` is a Kustomize build of `config/default` pinned to that tag
+  - a GitHub Release with Kustomize-built manifests pinned to that tag:
+    - `vikunja-operator.yaml` (CRDs + operator)
+    - `vikunja-operator.crds.yaml`
+    - `vikunja-operator.no-crds.yaml`
 
 ```sh
 git tag -a v0.1.0 -m "chore(release): v0.1.0"
@@ -168,7 +170,7 @@ git push origin v0.1.0
 Users can then install that release with either:
 
 ```sh
-kubectl apply -f https://github.com/go-paintedsky/vikunja-operator/releases/download/v0.1.0/install.yaml
+kubectl apply -f https://github.com/go-paintedsky/vikunja-operator/releases/download/v0.1.0/vikunja-operator.yaml
 # or pin config/overlays/homelab images.newTag to v0.1.0 and:
 kubectl apply -k config/overlays/homelab
 ```
@@ -177,7 +179,7 @@ The GHCR package must be public, or the cluster needs pull credentials (see abov
 
 ## Project Distribution
 
-Tagged releases already attach a Kustomize-built `install.yaml` (see [Releasing](#releasing)). You can also build that bundle locally:
+Tagged releases already attach Kustomize-built manifests (see [Releasing](#releasing)). You can also build the full bundle locally:
 
 ```sh
 make build-installer IMG=<some-registry>/vikunja-operator:tag

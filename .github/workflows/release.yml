@@ -4,6 +4,12 @@ on:
   push:
     tags:
       - "v*.*.*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Git tag to release (for example v0.1.2)
+        type: string
+        required: true
 
 permissions: {}
 
@@ -14,6 +20,8 @@ jobs:
     permissions:
       contents: write
       packages: write
+    env:
+      RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
     steps:
       - name: Clone the code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -21,6 +29,7 @@ jobs:
           fetch-depth: 0
           fetch-tags: true
           persist-credentials: false
+          ref: ${{ inputs.tag || github.ref }}
 
       - name: Setup Go
         uses: actions/setup-go@4b73464bb391d4059bd26b0524d20df3927bd417 # v6.3.0
@@ -37,11 +46,12 @@ jobs:
       - name: Set image repository
         run: echo "KO_DOCKER_REPO=ghcr.io/${GITHUB_REPOSITORY,,}" >> "$GITHUB_ENV"
 
-      - name: Build install.yaml
+      - name: Build release manifests
         run: |
           set -euo pipefail
           make manifests generate kustomize
-          mkdir -p out/release-overlay
+          mkdir -p out/release-overlay out/release-overlay-nocrds
+
           cat > out/release-overlay/kustomization.yaml <<EOF
           apiVersion: kustomize.config.k8s.io/v1beta1
           kind: Kustomization
@@ -50,15 +60,38 @@ jobs:
           images:
           - name: controller
             newName: ${KO_DOCKER_REPO}
-            newTag: ${GITHUB_REF_NAME}
+            newTag: ${RELEASE_TAG}
           EOF
-          ./bin/kustomize build out/release-overlay > out/install.yaml
+
+          cat > out/release-overlay-nocrds/kustomization.yaml <<EOF
+          apiVersion: kustomize.config.k8s.io/v1beta1
+          kind: Kustomization
+          namespace: vikunja-operator-system
+          namePrefix: vikunja-operator-
+          resources:
+          - ../../config/rbac
+          - ../../config/manager
+          - ../../config/default/metrics_service.yaml
+          patches:
+          - path: ../../config/default/manager_metrics_patch.yaml
+            target:
+              kind: Deployment
+          images:
+          - name: controller
+            newName: ${KO_DOCKER_REPO}
+            newTag: ${RELEASE_TAG}
+          EOF
+
+          ./bin/kustomize build out/release-overlay > out/vikunja-operator.yaml
+          ./bin/kustomize build config/crd > out/vikunja-operator.crds.yaml
+          ./bin/kustomize build out/release-overlay-nocrds > out/vikunja-operator.no-crds.yaml
+
 
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@f06c13b6b1a9625abc9e6e439d9c05a8f2190e94 # v7.2.3
         with:
           distribution: goreleaser
-          version: "~> v2"
+          version: "~> v2.18"
           args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

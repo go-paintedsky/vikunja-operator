@@ -15,7 +15,6 @@ builds:
       - CGO_ENABLED=0
     goos:
       - linux
-      - darwin
     goarch:
       - amd64
       - arm64
@@ -50,17 +49,23 @@ kos:
       org.opencontainers.image.licenses: Apache-2.0
       org.opencontainers.image.revision: "{{ .FullCommit }}"
       org.opencontainers.image.version: "{{ .Version }}"
+      org.opencontainers.image.created: "{{ .Date }}"
+    annotations:
+      org.opencontainers.image.source: "https://github.com/go-paintedsky/vikunja-operator"
+      org.opencontainers.image.title: vikunja-operator
+      org.opencontainers.image.description: Kubernetes operator for managing Vikunja resources
+      org.opencontainers.image.licenses: Apache-2.0
+      org.opencontainers.image.revision: "{{ .FullCommit }}"
+      org.opencontainers.image.version: "{{ .Version }}"
+      org.opencontainers.image.created: "{{ .Date }}"
 
+# formats: none — omitting this block would restore GoReleaser's default tarballs.
 archives:
-  - id: manager
-    ids:
-      - manager
-    formats:
-      - tar.gz
-    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+  - formats:
+      - none
 
 checksum:
-  name_template: checksums.txt
+  disable: true
 
 changelog:
   use: git
@@ -92,8 +97,13 @@ release:
     owner: go-paintedsky
     name: vikunja-operator
   extra_files:
-    - glob: out/install.yaml
-      name_template: install.yaml
+    - glob: out/vikunja-operator.yaml
+      name_template: vikunja-operator.yaml
+    - glob: out/vikunja-operator.crds.yaml
+      name_template: vikunja-operator.crds.yaml
+    - glob: out/vikunja-operator.no-crds.yaml
+      name_template: vikunja-operator.no-crds.yaml
+
 
 snapshot:
   version_template: "{{ incpatch .Version }}-next"
