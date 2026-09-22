@@ -53,14 +53,14 @@ var _ = Describe("VikunjaInstance Controller", func() {
 
 	It("becomes Ready when the token is valid", func() {
 		secret := &corev1.Secret{
-			ObjectMeta: metav1.ObjectMeta{Name: resourceName + "-token", Namespace: testNamespace},
+			Name: resourceName + "-token", Namespace: testNamespace,
 			StringData: map[string]string{testSecretTokenKey: testToken},
 		}
 		Expect(k8sClient.Create(ctx, secret)).To(Succeed())
 		DeferCleanup(func() { _ = k8sClient.Delete(ctx, secret) })
 
 		instance := &vikunjav1alpha1.VikunjaInstance{
-			ObjectMeta: metav1.ObjectMeta{Name: resourceName, Namespace: testNamespace},
+			Name: resourceName, Namespace: testNamespace,
 			Spec: vikunjav1alpha1.VikunjaInstanceSpec{
 				BaseURL:           server.URL,
 				APITokenSecretRef: vikunjav1alpha1.SecretKeyReference{Name: secret.Name, Key: testSecretTokenKey},
@@ -80,14 +80,14 @@ var _ = Describe("VikunjaInstance Controller", func() {
 
 	It("becomes NotReady when the token is rejected by the instance", func() {
 		secret := &corev1.Secret{
-			ObjectMeta: metav1.ObjectMeta{Name: resourceName + "-bad-token", Namespace: testNamespace},
+			Name: resourceName + "-bad-token", Namespace: testNamespace,
 			StringData: map[string]string{testSecretTokenKey: "wrong-token"},
 		}
 		Expect(k8sClient.Create(ctx, secret)).To(Succeed())
 		DeferCleanup(func() { _ = k8sClient.Delete(ctx, secret) })
 
 		instance := &vikunjav1alpha1.VikunjaInstance{
-			ObjectMeta: metav1.ObjectMeta{Name: resourceName, Namespace: testNamespace},
+			Name: resourceName, Namespace: testNamespace,
 			Spec: vikunjav1alpha1.VikunjaInstanceSpec{
 				BaseURL:           server.URL,
 				APITokenSecretRef: vikunjav1alpha1.SecretKeyReference{Name: secret.Name, Key: testSecretTokenKey},

@@ -62,8 +62,8 @@ var _ = Describe("Task Controller", func() {
 
 		By("standing up a ready Project for the task to belong to")
 		project = &vikunjav1alpha1.Project{
-			ObjectMeta: metav1.ObjectMeta{Name: projectName, Namespace: resourceNamespace},
-			Spec:       vikunjav1alpha1.ProjectSpec{InstanceRef: instanceRef, Title: "Task Test Project"},
+			Name: projectName, Namespace: resourceNamespace,
+			Spec: vikunjav1alpha1.ProjectSpec{InstanceRef: instanceRef, Title: "Task Test Project"},
 		}
 		Expect(k8sClient.Create(ctx, project)).To(Succeed())
 		projectReconciler := &ProjectReconciler{Client: k8sClient, Scheme: k8sClient.Scheme()}
@@ -81,8 +81,8 @@ var _ = Describe("Task Controller", func() {
 
 		By("standing up a ready Label for the task to reference")
 		label = &vikunjav1alpha1.Label{
-			ObjectMeta: metav1.ObjectMeta{Name: labelName, Namespace: resourceNamespace},
-			Spec:       vikunjav1alpha1.LabelSpec{InstanceRef: instanceRef, Title: "bug"},
+			Name: labelName, Namespace: resourceNamespace,
+			Spec: vikunjav1alpha1.LabelSpec{InstanceRef: instanceRef, Title: "bug"},
 		}
 		Expect(k8sClient.Create(ctx, label)).To(Succeed())
 		labelReconciler := &LabelReconciler{Client: k8sClient, Scheme: k8sClient.Scheme()}
@@ -106,7 +106,7 @@ var _ = Describe("Task Controller", func() {
 
 	It("creates the task with labels and assignees, reconciles changes, and deletes it", func() {
 		task := &vikunjav1alpha1.Task{
-			ObjectMeta: metav1.ObjectMeta{Name: resourceName, Namespace: resourceNamespace},
+			Name: resourceName, Namespace: resourceNamespace,
 			Spec: vikunjav1alpha1.TaskSpec{
 				ProjectRef: projectName,
 				Title:      "My Task",
@@ -157,8 +157,8 @@ var _ = Describe("Task Controller", func() {
 
 	It("reports NotReady while the referenced Project does not exist", func() {
 		task := &vikunjav1alpha1.Task{
-			ObjectMeta: metav1.ObjectMeta{Name: resourceName, Namespace: resourceNamespace},
-			Spec:       vikunjav1alpha1.TaskSpec{ProjectRef: "does-not-exist", Title: "My Task"},
+			Name: resourceName, Namespace: resourceNamespace,
+			Spec: vikunjav1alpha1.TaskSpec{ProjectRef: "does-not-exist", Title: "My Task"},
 		}
 		Expect(k8sClient.Create(ctx, task)).To(Succeed())
 

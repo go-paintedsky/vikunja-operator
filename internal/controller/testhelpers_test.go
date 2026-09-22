@@ -25,7 +25,6 @@ import (
 
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/meta"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 
@@ -50,14 +49,14 @@ const (
 func createReadyInstance(ctx context.Context, name string, server *httptest.Server) vikunjav1alpha1.InstanceReference {
 	secretName := name + "-token"
 	secret := &corev1.Secret{
-		ObjectMeta: metav1.ObjectMeta{Name: secretName, Namespace: testNamespace},
+		Name: secretName, Namespace: testNamespace,
 		StringData: map[string]string{testSecretTokenKey: testToken},
 	}
 	Expect(k8sClient.Create(ctx, secret)).To(Succeed())
 	DeferCleanup(func() { _ = k8sClient.Delete(ctx, secret) })
 
 	instance := &vikunjav1alpha1.VikunjaInstance{
-		ObjectMeta: metav1.ObjectMeta{Name: name, Namespace: testNamespace},
+		Name: name, Namespace: testNamespace,
 		Spec: vikunjav1alpha1.VikunjaInstanceSpec{
 			BaseURL:           server.URL,
 			APITokenSecretRef: vikunjav1alpha1.SecretKeyReference{Name: secretName, Key: testSecretTokenKey},

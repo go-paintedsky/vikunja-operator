@@ -65,7 +65,7 @@ var _ = Describe("Project Controller", func() {
 	It("creates, updates and deletes the project on the Vikunja instance", func() {
 		By("creating the Project resource")
 		project := &vikunjav1alpha1.Project{
-			ObjectMeta: metav1.ObjectMeta{Name: resourceName, Namespace: resourceNamespace},
+			Name: resourceName, Namespace: resourceNamespace,
 			Spec: vikunjav1alpha1.ProjectSpec{
 				InstanceRef: instanceRef,
 				Title:       "My Project",
@@ -106,7 +106,7 @@ var _ = Describe("Project Controller", func() {
 
 	It("reports NotReady while the referenced VikunjaInstance does not exist", func() {
 		project := &vikunjav1alpha1.Project{
-			ObjectMeta: metav1.ObjectMeta{Name: resourceName, Namespace: resourceNamespace},
+			Name: resourceName, Namespace: resourceNamespace,
 			Spec: vikunjav1alpha1.ProjectSpec{
 				InstanceRef: vikunjav1alpha1.InstanceReference{Name: "does-not-exist"},
 				Title:       "My Project",
