@@ -33,5 +33,9 @@ go.work
 dist/
 out/
 
-# Node (commitlint CI may create this if run locally)
+# Node (semantic-release may create this if run locally)
 node_modules/
+
+# Lefthook local overrides (personal skip / extra hooks)
+lefthook-local.yml
+.lefthook-local.yml
