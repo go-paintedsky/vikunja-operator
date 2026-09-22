@@ -25,7 +25,6 @@ import (
 
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/api/meta"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 
@@ -64,7 +63,7 @@ var _ = Describe("Label Controller", func() {
 
 	It("creates, updates and deletes the label on the Vikunja instance", func() {
 		label := &vikunjav1alpha1.Label{
-			ObjectMeta: metav1.ObjectMeta{Name: resourceName, Namespace: resourceNamespace},
+			Name: resourceName, Namespace: resourceNamespace,
 			Spec: vikunjav1alpha1.LabelSpec{
 				InstanceRef: instanceRef,
 				Title:       "bug",

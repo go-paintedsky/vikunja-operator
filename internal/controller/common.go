@@ -180,7 +180,8 @@ func mapToDependentsByField(c client.Client, field string, listPrototype client.
 				continue
 			}
 			requests = append(requests, reconcile.Request{
-				NamespacedName: types.NamespacedName{Namespace: o.GetNamespace(), Name: o.GetName()},
+				Namespace: o.GetNamespace(),
+				Name:      o.GetName(),
 			})
 		}
 		return requests

@@ -25,7 +25,6 @@ import (
 
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/api/meta"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 
@@ -64,7 +63,7 @@ var _ = Describe("Team Controller", func() {
 
 	It("creates the team, reconciles membership, and deletes the team", func() {
 		team := &vikunjav1alpha1.Team{
-			ObjectMeta: metav1.ObjectMeta{Name: resourceName, Namespace: resourceNamespace},
+			Name: resourceName, Namespace: resourceNamespace,
 			Spec: vikunjav1alpha1.TeamSpec{
 				InstanceRef: instanceRef,
 				Name:        "Sample Team",
