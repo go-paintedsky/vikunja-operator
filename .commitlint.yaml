@@ -1,0 +1,59 @@
+# Conventional Commits policy for lefthook (commit-msg) and CI.
+# Same types/scopes as the previous @commitlint JS config.
+min-version: v0.12.0
+formatter: default
+rules:
+  - type-enum
+  - type-empty
+  - description-empty
+  - header-max-length
+  - scope-enum
+  - scope-case
+  - body-empty
+  - body-max-line-length
+  - footer-max-line-length
+  - breaking-change-exclamation-mark
+severity:
+  default: error
+  rules:
+    body-empty: warn
+    body-max-line-length: warn
+    footer-max-line-length: warn
+settings:
+  type-enum:
+    argument:
+      - feat
+      - fix
+      - docs
+      - style
+      - refactor
+      - perf
+      - test
+      - build
+      - ci
+      - chore
+      - revert
+  header-max-length:
+    argument: 100
+  scope-enum:
+    argument:
+      - api
+      - controller
+      - rbac
+      - ci
+      - release
+      - deps
+    flags:
+      allow-empty: true
+  scope-case:
+    argument: kebab-case
+  type-empty: {}
+  description-empty: {}
+  body-empty: {}
+  body-max-line-length:
+    argument: 200
+  footer-max-line-length:
+    argument: 200
+  breaking-change-exclamation-mark: {}
+disable-default-ignores: false
+ignores: []

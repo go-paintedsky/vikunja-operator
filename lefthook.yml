@@ -1,0 +1,24 @@
+# Git hooks. Install once per clone with: make hooks
+# Skip: LEFTHOOK=0 git commit   or   git commit --no-verify
+min_version: 2.0.0
+
+pre-commit:
+  parallel: true
+  commands:
+    tidy:
+      glob: "{go.mod,go.sum,**/*.go}"
+      run: go mod tidy && git diff --exit-code -- go.mod go.sum
+    lint:
+      glob: "{**/*.go,.golangci.yml,.custom-gcl.yml}"
+      run: make lint
+    lint-config:
+      glob: "{.golangci.yml,.custom-gcl.yml}"
+      run: make lint-config
+    generate:
+      glob: "{api/**/*.go,hack/boilerplate.go.txt}"
+      run: make manifests generate && git diff --exit-code -- config/crd/bases config/rbac/role.yaml api
+
+commit-msg:
+  commands:
+    commitlint:
+      run: hack/commitlint.sh {1}

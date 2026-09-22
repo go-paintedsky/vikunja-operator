@@ -208,6 +208,14 @@ is manually re-applied afterwards.
 
 Use [Conventional Commits](https://www.conventionalcommits.org/) for commit messages and pull request titles (`feat:`, `fix:`, `docs:`, `chore:`, ...). CI rejects PRs that do not match.
 
+Install git hooks once per clone so local commits run the same tidy, lint, generate, and commitlint checks as CI:
+
+```sh
+make hooks
+```
+
+Pre-commit runs `go mod tidy`, `make lint`, and (when API types change) `make manifests generate`. The commit-msg hook runs the pinned Go commitlint binary against `.commitlint.yaml`. Skip hooks with `LEFTHOOK=0 git commit` or `git commit --no-verify`. Personal extras (for example a `pre-push` `make test`) go in `lefthook-local.yml`, which is gitignored.
+
 **NOTE:** Run `make help` for more information on all potential `make` targets
 
 More information can be found via the [Kubebuilder Documentation](https://book.kubebuilder.io/introduction.html)
